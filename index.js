@@ -138,7 +138,7 @@ async function setDeviceState(device, desiredState) {
 // Updated handleVoiceCommand function to use setDeviceState
 async function handleVoiceCommand(command) {
     const actionMatch = command.match(/(on|off)/);
-    const deviceMatch = command.match(/light|redlight/); // Add more device names as needed
+    const deviceMatch = command.match(/light|fan/); // Add more device names as needed
 
     if (actionMatch && deviceMatch) {
         const action = actionMatch[0];
