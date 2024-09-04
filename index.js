@@ -1,20 +1,33 @@
 url = "https://home-automation-p777.vercel.app"
 
 // Function to toggle a device on/off
+// Function to toggle a device on/off based on its current state
 function toggleDevice(device) {
-    fetch(`${url}/device/${device}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ state: !(document.getElementById(`${device}-status`).innerText.includes('On')) })
-    })
+    fetch(`${url}/device/${device}`)
+        .then(response => response.json())
+        .then(data => {
+            const currentState = data[device];
+            const newState = !currentState;
+
+            return fetch(`${url}/device/${device}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ state: newState })
+            });
+        })
         .then(response => response.json())
         .then(data => {
             updateStatus(device, data[device]);
+        })
+        .catch(error => {
+            console.error(`Failed to toggle device "${device}":`, error);
         });
 }
 
+
+// Function to load devices on page load
 // Function to load devices on page load
 function loadDevices() {
     fetch(`${url}/devices`)
@@ -32,14 +45,12 @@ function loadDevices() {
 
                 const toggleButton = document.createElement('button');
                 toggleButton.textContent = `Toggle ${deviceNameP.textContent}`;
-
-                // Ensure the toggleDevice function exists
-                toggleButton.onclick = () => toggleDevice(device);
+                toggleButton.onclick = () => toggleDevice(device); // Toggle device on button click
 
                 const statusP = document.createElement('p');
                 statusP.className = 'status';
                 statusP.id = `${device}-status`;
-                statusP.textContent = 'Status: Unknown';
+                statusP.textContent = 'Status: Loading...';
 
                 deviceDiv.appendChild(deviceNameP);
                 deviceDiv.appendChild(toggleButton);
@@ -47,7 +58,7 @@ function loadDevices() {
 
                 controlsDiv.appendChild(deviceDiv);
 
-                // After creating the device element, fetch and update its status
+                // Fetch and update the device's state but do not toggle it
                 getDeviceState(device);
             });
         })
@@ -55,6 +66,17 @@ function loadDevices() {
             console.error('Error loading devices:', error);
             alert('Failed to load devices.');
         });
+}
+
+// Function to update the status of a device without toggling it
+async function getDeviceState(device) {
+    try {
+        const response = await fetch(`${url}/device/${device}`);
+        const data = await response.json();
+        updateStatus(device, data[device]);
+    } catch (error) {
+        console.error(`Failed to get the state of device "${device}":`, error);
+    }
 }
 
 // Load devices on page load
