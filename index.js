@@ -103,78 +103,78 @@ function updateStatus(device, status) {
     }
 }
 
-// Speech recognition setup
-const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-recognition.lang = 'en-US';
-recognition.continuous = true; // Run continuously
+// // Speech recognition setup
+// const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+// recognition.lang = 'en-US';
+// recognition.continuous = true; // Run continuously
 
-recognition.onresult = (event) => {
-    const command = event.results[event.resultIndex][0].transcript.trim().toLowerCase();
-    console.log('Command:', command);
+// recognition.onresult = (event) => {
+//     const command = event.results[event.resultIndex][0].transcript.trim().toLowerCase();
+//     console.log('Command:', command);
 
-    if (command.startsWith('ghost')) {
-        const parsedCommand = command.replace('ghost', '').trim();
-        handleVoiceCommand(parsedCommand);
-    } else {
-        document.getElementById('status').textContent = 'Waiting for command...';
-    }
-};
+//     if (command.startsWith('ghost')) {
+//         const parsedCommand = command.replace('ghost', '').trim();
+//         handleVoiceCommand(parsedCommand);
+//     } else {
+//         document.getElementById('status').textContent = 'Waiting for command...';
+//     }
+// };
 
-recognition.onerror = (event) => {
-    console.error('Speech recognition error:', event.error);
-    document.getElementById('status').textContent = `Error: ${event.error}`;
-};
+// recognition.onerror = (event) => {
+//     console.error('Speech recognition error:', event.error);
+//     document.getElementById('status').textContent = `Error: ${event.error}`;
+// };
 
-recognition.onend = () => {
-    console.log('Speech recognition service disconnected, restarting...');
-    document.getElementById('status').textContent = 'Restarting speech recognition...';
-    recognition.start(); // Restart recognition if it stops
-};
+// recognition.onend = () => {
+//     console.log('Speech recognition service disconnected, restarting...');
+//     document.getElementById('status').textContent = 'Restarting speech recognition...';
+//     recognition.start(); // Restart recognition if it stops
+// };
 
-recognition.start();
-document.getElementById('status').textContent = 'Listening... Say "ghost" to start a command.';
+// recognition.start();
+// document.getElementById('status').textContent = 'Listening... Say "ghost" to start a command.';
 
-// Function to turn a device on or off based on the desired state
-async function setDeviceState(device, desiredState) {
-    try {
-        // Fetch the current state of the device
-        const response = await fetch(`${url}/device/${device}`);
-        const data = await response.json();
-        const currentState = data[device];
+// // Function to turn a device on or off based on the desired state
+// async function setDeviceState(device, desiredState) {
+//     try {
+//         // Fetch the current state of the device
+//         const response = await fetch(`${url}/device/${device}`);
+//         const data = await response.json();
+//         const currentState = data[device];
 
-        // Compare the current state with the desired state
-        if (currentState === desiredState) {
-            console.log(`Device "${device}" is already ${desiredState ? 'On' : 'Off'}. No action taken.`);
-            document.getElementById('status').textContent = `Device "${device}" is already ${desiredState ? 'On' : 'Off'}.`;
-        } else {
-            console.log(`Toggling device "${device}" to ${desiredState ? 'On' : 'Off'}.`);
-            await toggleDevice(device);
-            document.getElementById('status').textContent = `Device "${device}" has been turned ${desiredState ? 'On' : 'Off'}.`;
-        }
-    } catch (error) {
-        console.error(`Failed to set state for device "${device}":`, error);
-        document.getElementById('status').textContent = `Failed to set state for device "${device}".`;
-    }
-}
+//         // Compare the current state with the desired state
+//         if (currentState === desiredState) {
+//             console.log(`Device "${device}" is already ${desiredState ? 'On' : 'Off'}. No action taken.`);
+//             document.getElementById('status').textContent = `Device "${device}" is already ${desiredState ? 'On' : 'Off'}.`;
+//         } else {
+//             console.log(`Toggling device "${device}" to ${desiredState ? 'On' : 'Off'}.`);
+//             await toggleDevice(device);
+//             document.getElementById('status').textContent = `Device "${device}" has been turned ${desiredState ? 'On' : 'Off'}.`;
+//         }
+//     } catch (error) {
+//         console.error(`Failed to set state for device "${device}":`, error);
+//         document.getElementById('status').textContent = `Failed to set state for device "${device}".`;
+//     }
+// }
 
-// Updated handleVoiceCommand function to use setDeviceState
-async function handleVoiceCommand(command) {
-    const actionMatch = command.match(/(on|off)/);
-    const deviceMatch = command.match(/light|fan/); // Add more device names as needed
+// // Updated handleVoiceCommand function to use setDeviceState
+// async function handleVoiceCommand(command) {
+//     const actionMatch = command.match(/(on|off)/);
+//     const deviceMatch = command.match(/light|fan/); // Add more device names as needed
 
-    if (actionMatch && deviceMatch) {
-        const action = actionMatch[0];
-        const device = deviceMatch[0];
+//     if (actionMatch && deviceMatch) {
+//         const action = actionMatch[0];
+//         const device = deviceMatch[0];
 
-        const desiredState = action === 'on'; // true for 'on', false for 'off'
-        console.log(`Performing action: ${action} on device: ${device}`);
+//         const desiredState = action === 'on'; // true for 'on', false for 'off'
+//         console.log(`Performing action: ${action} on device: ${device}`);
 
-        // Use the setDeviceState function to manage device state
-        await setDeviceState(device, desiredState);
-        getDeviceState(device); // Update the device status on the page
-    } else {
-        console.log('Unknown command:', command);
-        document.getElementById('status').textContent = 'Unknown command';
-    }
-}
+//         // Use the setDeviceState function to manage device state
+//         await setDeviceState(device, desiredState);
+//         getDeviceState(device); // Update the device status on the page
+//     } else {
+//         console.log('Unknown command:', command);
+//         document.getElementById('status').textContent = 'Unknown command';
+//     }
+// }
 
