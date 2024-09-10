@@ -92,7 +92,7 @@ function updateStatus(device, status) {
 }
 
 // Load devices on page load
-window.onload = loadDevice;
+window.onload = loadDevices;
 
 
 
