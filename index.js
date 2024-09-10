@@ -92,24 +92,7 @@ function updateStatus(device, status) {
 }
 
 // Load devices on page load
-window.onload = function () {
-    loadDevices();
-
-    // Call getDeviceState for each device every second
-    setInterval(() => {
-        fetch(`${url}/devices`)
-            .then(response => response.json())
-            .then(devices => {
-                devices.forEach(device => {
-                    getDeviceState(device);  // Fetch and update the device's state every second
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching device list:', error);
-            });
-    }, 1000);  // 1000 milliseconds = 1 second
-};
-
+window.onload = loadDevice;
 
 
 
