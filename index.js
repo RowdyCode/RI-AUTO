@@ -98,8 +98,7 @@ window.onload = loadDevices;
 
 
 
-setTimeout(getDeviceState("light"), 1000);
-setTimeout(getDeviceState("fan"), 1000);
+
 
 // // Speech recognition setup
 // const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
