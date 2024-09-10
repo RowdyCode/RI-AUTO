@@ -79,20 +79,6 @@ async function getDeviceState(device) {
     }
 }
 
-// Load devices on page load
-window.onload = loadDevices;
-
-// Function to update the status of a device
-async function getDeviceState(device) {
-    try {
-        const response = await fetch(`${url}/device/${device}`);
-        const data = await response.json();
-        updateStatus(device, data[device]);
-    } catch (error) {
-        console.error(`Failed to get the state of device "${device}":`, error);
-    }
-}
-
 // Function to update the status of a device
 function updateStatus(device, status) {
     const statusElement = document.getElementById(`${device}-status`);
@@ -102,6 +88,14 @@ function updateStatus(device, status) {
         console.error(`Status element for device "${device}" not found.`);
     }
 }
+
+// Load devices on page load
+window.onload = loadDevices;
+
+
+
+setTimeout(getDeviceState("light"), 1000);
+setTimeout(getDeviceState("fan"), 1000);
 
 // // Speech recognition setup
 // const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
