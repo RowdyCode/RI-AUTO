@@ -29,6 +29,7 @@ function toggleDevice(device) {
 
 // Function to load devices on page load
 // Function to load devices on page load
+// Function to load devices on page load
 function loadDevices() {
     fetch(`${url}/devices`)
         .then(response => response.json())
@@ -58,8 +59,10 @@ function loadDevices() {
 
                 controlsDiv.appendChild(deviceDiv);
 
-                // Fetch and update the device's state but do not toggle it
-                getDeviceState(device);
+                // Fetch and update the device's state every second
+                setInterval(() => {
+                    getDeviceState(device);
+                }, 1000);
             });
         })
         .catch(error => {
@@ -67,6 +70,7 @@ function loadDevices() {
             alert('Failed to load devices.');
         });
 }
+
 
 // Function to update the status of a device without toggling it
 async function getDeviceState(device) {
