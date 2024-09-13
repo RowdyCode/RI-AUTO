@@ -112,17 +112,21 @@
         // Delete device
         deleteBtn.addEventListener('click', () => {
             const sid = prompt("Enter SID of device to delete:");
+            const password = prompt("Enter Admin Password:");
             if (sid) {
-                const deviceRef = ref(db, "Devices/" + sid);
-                remove(deviceRef)
-                    .then(() => {
-                        alert("Device deleted.");
-                    })
-                    .catch((error) => {
-                        alert("Error: " + error);
-                    });
-            }
-        });
+                if(password == 9934121310){
+                    
+                    const deviceRef = ref(db, "Devices/" + sid);
+                    remove(deviceRef)
+                        .then(() => {
+                            alert("Device deleted.");
+                        })
+                        .catch((error) => {
+                            alert("Error: " + error);
+                        });
+                    }
+                }
+         });
 
         // Monitor devices on page load
         window.onload = monitorDevices;
