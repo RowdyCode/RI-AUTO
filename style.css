@@ -166,12 +166,69 @@ h1 {
     background: wheat;
     border-radius: 20px;
 }
+
+#global-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    color: white;
+    font-size: 16px;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 20px 0;
+}
+
+.global-btn {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.global-btn:hover {
+    background-color: #555555;
+    transform: scale(1.05);
+}
+
+.global-btn:active {
+    transform: scale(0.95);
+}
+
+#turnoffallbtn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    
+}
+
+#turnoffallbtn:hover {
+    background-color: #cc0000;
+}
+
 /* Responsive styling */
 @media (max-width: 768px) {
     .device-btn {
         width: 100px;
         height: 100px;
         font-size: 16px;
+    }
+
+    
+    #global-controls {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .global-btn {
+        width: 90%;
+        font-size: 18px;
     }
 
     .pings{
