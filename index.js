@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getDatabase, ref, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+import { getDatabase, ref, set, update, remove, onValue ,get} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -20,6 +20,8 @@ const db = getDatabase();
 const deviceContainer = document.getElementById('deviceContainer');
 const addBtn = document.getElementById('addBtn');
 const deleteBtn = document.getElementById('deleteBtn');
+const turnOnAllBtn = document.getElementById('turnOnAllBtn');
+const turnOffAllBtn = document.getElementById('turnOffAllBtn');
 
 // Admin Password
 const ADMIN_PASSWORD = "9934121310";
@@ -89,7 +91,7 @@ function createDeviceButtonWithTimers(sid, name, state, timers = []) {
             timers.splice(index, 1);
             update(ref(db, `Devices/${sid}`), { timers })
                 .then(() => {
-                    alert("Timer deleted.");
+                    console.log("Timer deleted.");
                     timerItem.remove();
                 })
                 .catch((error) => alert("Error deleting timer: " + error));
@@ -121,7 +123,7 @@ function createDeviceButtonWithTimers(sid, name, state, timers = []) {
             const newTimer = { start, end };
             timers.push(newTimer);
             update(ref(db, `Devices/${sid}`), { timers })
-                .then(() => alert("Timer added successfully."))
+                .then(() => console.log("Timer added successfully."))
                 .catch((error) => alert("Error adding timer: " + error));
         } else {
             alert("Please enter valid start and end times.");
@@ -140,7 +142,7 @@ function createDeviceButtonWithTimers(sid, name, state, timers = []) {
     clearTimersBtn.addEventListener('click', () => {
         update(ref(db, `Devices/${sid}`), { timers: [] })
             .then(() => {
-                alert("All timers cleared.");
+                console.log("All timers cleared.");
                 timers.length = 0;
                 timerList.innerHTML = '';
             })
@@ -173,7 +175,7 @@ addBtn.addEventListener('click', () => {
     if (password === ADMIN_PASSWORD) {
         if (name && sid) {
             set(ref(db, `Devices/${sid}`), { nameofdevice: { devicename: name }, state: false })
-                .then(() => alert("Device added."))
+                .then(() => console.log("Device added."))
                 .catch((error) => alert("Error adding device: " + error));
         } else {
             alert("Please enter valid device name and SID.");
@@ -190,7 +192,7 @@ deleteBtn.addEventListener('click', () => {
 
     if (password === ADMIN_PASSWORD) {
         remove(ref(db, `Devices/${sid}`))
-            .then(() => alert("Device deleted."))
+            .then(() => console.log("Device deleted."))
             .catch((error) => alert("Error deleting device: " + error));
     } else {
         alert("Incorrect admin password.");
@@ -219,6 +221,49 @@ function automateDevices() {
         });
     });
 }
+
+turnOnAllBtn.addEventListener('click', () => {
+    get(ref(db, 'Devices')).then((snapshot) => {
+        if (snapshot.exists()) {
+            const devices = snapshot.val();
+            const updates = {};
+
+            // Loop through devices and set their state to true
+            Object.keys(devices).forEach((deviceId) => {
+                updates[`Devices/${deviceId}/state`] = true;
+            });
+
+            // Update all devices in the database
+            update(ref(db), updates)
+                .then(() => console.log("All devices have been turned on."))
+                .catch((error) => alert("Error turning on devices: " + error));
+        } else {
+            alert("No devices found.");
+        }
+    }).catch((error) => alert("Error fetching devices: " + error));
+});
+
+// Turn Off All Devices
+turnOffAllBtn.addEventListener('click', () => {
+    get(ref(db, 'Devices')).then((snapshot) => {
+        if (snapshot.exists()) {
+            const devices = snapshot.val();
+            const updates = {};
+
+            // Loop through devices and set their state to false
+            Object.keys(devices).forEach((deviceId) => {
+                updates[`Devices/${deviceId}/state`] = false;
+            });
+
+            // Update all devices in the database
+            update(ref(db), updates)
+                .then(() => console.log("All devices have been turned off."))
+                .catch((error) => alert("Error turning off devices: " + error));
+        } else {
+            alert("No devices found.");
+        }
+    }).catch((error) => alert("Error fetching devices: " + error));
+});
 
 // Initialize
 window.onload = () => {
